@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediction History</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00c853;
+    --navy:  #0a0f1e;
+    --card:  #111827;
+    --border:#1f2d42;
+    --text:  #e8f0fe;
+    --muted: #8a9bbf;
+    --accent:#64ffda;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 40% at 10% 10%, rgba(0,200,83,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--accent);
+  }
+
+  .logo span { color: var(--green); }
+
+  nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); border-color: var(--accent); background: rgba(100,255,218,0.05); }
+
+  .page-header {
+    position: relative;
+    z-index: 1;
+    padding: 50px 40px 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .page-header h1 span {
+    background: linear-gradient(135deg, var(--green), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-header p { color: var(--muted); font-size: 0.9rem; }
+
+  .table-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+    animation: fadeUp 0.6s ease 0.15s both;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  thead tr {
+    background: rgba(0,200,83,0.08);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green);
+    padding: 16px 20px;
+    text-align: left;
+  }
+
+  td {
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: var(--text);
+    border-bottom: 1px solid rgba(31,45,66,0.5);
+  }
+
+  tbody tr {
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(100,255,218,0.03); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .score-pill {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(0,200,83,0.15), rgba(100,255,218,0.08));
+    border: 1px solid rgba(0,200,83,0.3);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .gender-pill {
+    display: inline-block;
+    background: rgba(100,255,218,0.07);
+    border: 1px solid rgba(100,255,218,0.2);
+    color: var(--accent);
+    font-size: 0.78rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty .icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty p { font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Student<span>Pridection</span></div>
+  <a href="/">← Back to Predictor</a>
+</nav>
+
+<div class="page-header">
+  <h1>Prediction <span>History</span></h1>
+  <p>All past student grade predictions stored in the database.</p>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Student ID</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Study Hours</th>
+        <th>Attendance %</th>
+        <th>Previous Grade</th>
+        <th>Predicted Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if records %}
+        {% for r in records %}
+        <tr>
+          <td>{{ r.student_id }}</td>
+          <td>{{ r.name }}</td>
+          <td><span class="gender-pill">{{ r.gender }}</span></td>
+          <td>{{ r.study_hours }} hrs</td>
+          <td>{{ r.attendance }}%</td>
+          <td>{{ r.previous_grade }}</td>
+          <td><span class="score-pill">{{ r.predicted_score }}</span></td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7">
+            <div class="empty">
+              <div class="icon">📭</div>
+              <p>No predictions yet. Make your first prediction!</p>
+            </div>
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
